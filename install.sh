@@ -22,9 +22,7 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io
 
 # === LANCER TRAFFMONETIZER ===
 echo "[+] Launching TraffMonetizer container..."
-sudo docker run -d \
-  --restart always \
-  --name traffmonetizer \
-  traffmonetizer/cli start accept --token "$TOKEN"
+sudo docker run -d --restart always --name traffmonetizer ghcr.io/traffmonetizer/cli start accept --token "$TOKEN"
+
 
 echo "[✓] Installation terminée. Le conteneur est lancé."
