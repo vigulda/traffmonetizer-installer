@@ -1,28 +1,25 @@
 #!/bin/bash
 
-# === CONFIGURABLE ===
-TOKEN="9k8MLjxY8IWixZbyn/qNTKhupX/a0V3TmTQUnpIC/UE="
+# === Vérifie si un token est passé en argument ===
+if [ -z "$1" ]; then
+  echo "❌ Usage : bash install.sh VOTRE_TOKEN_TRAFFMONETIZER"
+  exit 1
+fi
 
-# === INSTALL DOCKER ===
-echo "[+] Installing Docker..."
-sudo apt update -y
-sudo apt install -y ca-certificates curl gnupg lsb-release
+TOKEN="$1"
 
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+# === Télécharge le script officiel de spiritLHLS ===
+echo "[+] Téléchargement du script d'installation..."
+curl -L https://raw.githubusercontent.com/spiritLHLS/traffmonetizer-one-click-command-installation/main/tm.sh -o tm.sh
 
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Vérifie si le téléchargement a réussi
+if [ ! -f tm.sh ]; then
+  echo "❌ Échec du téléchargement du script."
+  exit 1
+fi
 
-sudo apt update -y
-sudo apt install -y docker-ce docker-ce-cli containerd.io
+chmod +x tm.sh
 
-# === LANCER TRAFFMONETIZER ===
-echo "[+] Launching TraffMonetizer container..."
-sudo docker run -d --restart always --name traffmonetizer ghcr.io/traffmonetizer/cli start accept --token "$TOKEN"
-
-
-echo "[✓] Installation terminée. Le conteneur est lancé."
+# === Lance le script avec le token donné ===
+echo "[+] Lancement du script avec le token fourni..."
+sudo bash tm.sh -t "$TOKEN"
